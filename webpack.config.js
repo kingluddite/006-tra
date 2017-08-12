@@ -11,10 +11,12 @@ const autoprefixer = require('autoprefixer');
 // what to do with .js files
 const javascript = {
   test: /\.(js)$/, // find all .js files
-  use: [{
-    loader: 'babel-loader',
-    options: { presets: ['es2015'] }
-  }],
+  use: [
+    {
+      loader: 'babel-loader',
+      options: { presets: ['es2015'] },
+    },
+  ],
 };
 
 /*
@@ -24,8 +26,10 @@ const javascript = {
 const postcss = {
   loader: 'postcss-loader',
   options: {
-    plugins() { return [autoprefixer({ browsers: 'last 3 versions' })]; }
-  }
+    plugins() {
+      return [autoprefixer({ browsers: 'last 3 versions' })];
+    },
+  },
 };
 
 // this is our sass/css loader. It handles files that are require('something.scss')
@@ -34,12 +38,17 @@ const styles = {
   // here we pass the options as query params b/c it's short.
   // remember above we used an object for each loader instead of just a string?
   // We don't just pass an array of loaders, we run them through the extract plugin so they can be outputted to their own .css file
-  use: ExtractTextPlugin.extract(['css-loader?sourceMap', postcss, 'sass-loader?sourceMap'])
+  use: ExtractTextPlugin.extract([
+    'css-loader?sourceMap',
+    postcss,
+    'sass-loader?sourceMap',
+  ]),
 };
 
 // a plugin to compress JS
-const uglify = new webpack.optimize.UglifyJsPlugin({ // eslint-disable-line
-  compress: { warnings: false }
+const uglify = new webpack.optimize.UglifyJsPlugin({
+  // eslint-disable-line
+  compress: { warnings: false },
 });
 
 // OK - now we stitch it together
@@ -47,7 +56,7 @@ const config = {
   entry: {
     // we only have 1 entry, but we stored entry in an object and
     // we can add more if we want
-    App: './public/javascripts/tra-app.js'
+    App: './public/javascripts/tra-app.js',
   },
   // we're using sourcemaps
   // here is where we specify which kind of sourcemap to use
@@ -59,7 +68,7 @@ const config = {
     path: path.resolve(__dirname, 'public', 'dist'),
     // we can use "substitutions" in file names like [name] and [hash]
     // name will be `App` because that is what we used above in our entry
-    filename: '[name].bundle.js'
+    filename: '[name].bundle.js',
   },
 
   // webpack sees everthing as modules
@@ -67,7 +76,7 @@ const config = {
   // We implement them here
   // Pass it the rules for our JS and our styles
   module: {
-    rules: [javascript, styles]
+    rules: [javascript, styles],
   },
   // finally we pass it an array of our plugins
   // uncomment the very next line to uglify
@@ -75,7 +84,7 @@ const config = {
   plugins: [
     // tell webpack to output our css to a separate file
     new ExtractTextPlugin('style.css'),
-  ]
+  ],
 };
 // webpack doesn't like some packages using a soon to be deprecated API.
 // So we turn that error notification off
